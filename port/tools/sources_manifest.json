@@ -90,7 +90,14 @@
     "sha256": "b12151ac45429cf3b3f6f1246a05c92fa2e8018844688928ee552e3fc232161b",
     "game": "as2",
     "fetch": null,
-    "note": "No matching version found after extensive search: archive.org general/ipaarchive search, web search for the exact filename, and a full scan of ios-ipa-collection (14792 files), ios_3_2_ipa/ios_3_ipa/ios_2_ipa, iPadGames/iPadGames2010, and iOSObscura (17668 files, organized by bundle ID -- its com.turner.Surgeon2 folder has only v2.3). No known automated source; this file cannot be reconstructed if lost."
+    "note": "No matching version found after extensive search: archive.org general/ipaarchive search, web search for the exact filename, and a full scan of ios-ipa-collection (14792 files), ios_3_2_ipa/ios_3_ipa/ios_2_ipa, iPadGames/iPadGames2010, and iOSObscura (17668 files, organized by bundle ID -- its com.turner.Surgeon2 folder has only v2.3). No known automated source; this file cannot be reconstructed if lost. A close (not exact) v1.0 build is used as a fallback if this is missing -- see the fallback entry's own label for exactly how it differs.",
+    "fallback": {
+      "source": "archive_org",
+      "item": "old-ios-ipa-games-collection",
+      "file": "Old IOS Ipa Games Collection Part 17.rar/Amateur Surgeon 2 HD - Below IOS 7.ipa",
+      "sha256": "d771b0abe906d2776b80d6c03646363f9935d75a6f1b70d7e475d245f9341310",
+      "label": "v1.0, not v1.2 -- confirmed near-identical: 1512/1540 common files byte-identical, all 22 differing .nib files structurally identical once Xcode recompile-only object IDs are normalized out, same-size executable with only 1410/1632256 bytes differing (one small localized change). Only known real difference: v1.2 has one extra tutorial popup (a hint to tilt the iPad for the flashlight) that v1.0 lacks."
+    }
   },
   {
     "path": "IPAs/com.turner.AmateurSurgeonXMas-iOS3.0-(Clutch-2.0.4).ipa",

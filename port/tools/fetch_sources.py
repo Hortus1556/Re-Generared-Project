@@ -157,40 +157,65 @@ def ensure(games, log=print):
             actual = sha256_of(dest)
             if actual == expected:
                 status = "ok"
+            elif entry.get("fallback") and actual == entry["fallback"]["sha256"]:
+                status = f"ok (fallback already in place: {entry['fallback']['label']})"
             else:
                 status = "MISMATCH"
         elif entry.get("fetch"):
-            fetch = entry["fetch"]
-            if fetch["source"] == "flashpoint":
-                # entry["path"] is "re/flash/<game>/<host>/<rest>" -- the
-                # part after "re/flash/<game>/" is exactly the host+path
-                # Flashpoint's own Legacy htdocs mirror serves (verified
-                # by hash): https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/<host>/<rest>
-                _, _, after = entry["path"].partition(f"re/flash/{entry['game']}/")
-                url = "https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/" + \
-                    urllib.parse.quote(after)
-            else:
-                url = f"https://archive.org/download/{fetch['item']}/{fetch['file']}"
-            part = dest + ".part"
-            os.makedirs(os.path.dirname(dest), exist_ok=True)
-            try:
-                download(url, part)
-                actual = sha256_of(part)
-                if actual == expected:
-                    os.replace(part, dest)
-                    status = "fetched"
-                else:
-                    os.remove(part)
-                    status = f"MISMATCH after download (got {actual[:12]}, wanted {expected[:12]})"
-            except Exception as e:
-                if os.path.exists(part):
-                    os.remove(part)
-                status = f"FETCH FAILED: {e}"
+            status = _fetch_one(entry["fetch"], entry["path"], dest, expected)
+        elif entry.get("fallback"):
+            # Not the exact file (different hash, verified against its
+            # OWN expected hash below -- never skip verification just
+            # because it's a fallback), but close enough to use when the
+            # real one can't be found at all: see the fallback's own
+            # "label" for exactly how it differs.
+            fb = entry["fallback"]
+            status = _fetch_one(fb, entry["path"], dest, fb["sha256"])
+            if status == "fetched":
+                status = f"fetched (fallback: {fb['label']})"
         else:
             status = "MISSING"
 
         results.append((entry["path"], status, entry.get("note", "")))
     return results
+
+
+def _fetch_one(fetch, entry_path, dest, expected_sha256):
+    """Downloads one file per a manifest entry's "fetch" (or "fallback")
+    spec into dest, verified against expected_sha256. Returns "fetched",
+    or a status string describing why not."""
+    if fetch["source"] == "flashpoint":
+        # entry_path is "re/flash/<game>/<host>/<rest>" -- the part after
+        # "re/flash/<game>/" is exactly the host+path Flashpoint's own
+        # Legacy htdocs mirror serves (verified by hash):
+        # https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/<host>/<rest>
+        game = entry_path.split("/")[2]
+        _, _, after = entry_path.partition(f"re/flash/{game}/")
+        url = "https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/" + urllib.parse.quote(after)
+    else:
+        url = f"https://archive.org/download/{fetch['item']}/" + urllib.parse.quote(fetch["file"])
+    part = dest + ".part"
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    try:
+        download(url, part)
+        actual = sha256_of(part)
+        if actual == expected_sha256:
+            os.replace(part, dest)
+            return "fetched"
+        os.remove(part)
+        return f"MISMATCH after download (got {actual[:12]}, wanted {expected_sha256[:12]})"
+    except Exception as e:
+        if os.path.exists(part):
+            os.remove(part)
+        return f"FETCH FAILED: {e}"
+
+
+def is_success(status):
+    """True for "ok" and "fetched" -- including a fallback fetch, whose
+    status is "fetched (fallback: ...)" so the per-file report can say so,
+    but which still counts as success: a real, hash-verified file is now
+    in place, even if it isn't byte-for-byte the primary one."""
+    return status.startswith("ok") or status.startswith("fetched")
 
 
 def main():
@@ -203,7 +228,7 @@ def main():
     bad = False
     for path, status, note in results:
         print(f"{status:9s} {path}")
-        if status not in ("ok", "fetched"):
+        if not is_success(status):
             bad = True
             if note:
                 print(f"          -> {note}")
