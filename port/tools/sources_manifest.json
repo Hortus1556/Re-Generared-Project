@@ -79,15 +79,18 @@
     "path": "IPAs/A.Surgeon_v1.0.3_os32.ipa",
     "sha256": "80f9cc2fd3eaeb848140d9c00dc28ea6d95570b0342555e3e6aaef3699a06245",
     "game": "as1",
-    "fetch": null,
-    "note": "No matching version found on archive.org (different build/version there). No known automated source; this file cannot be reconstructed if lost."
+    "fetch": {
+      "source": "archive_org",
+      "item": "ios_3_2_ipa",
+      "file": "A.Surgeon_v1.0.3_os32.ipa"
+    }
   },
   {
     "path": "IPAs/Amateur Surgeon 2 HD v1.2 iPad os32most_uniQue.ipa",
     "sha256": "b12151ac45429cf3b3f6f1246a05c92fa2e8018844688928ee552e3fc232161b",
     "game": "as2",
     "fetch": null,
-    "note": "No matching version found on archive.org (different build/version there). No known automated source; this file cannot be reconstructed if lost."
+    "note": "No matching version found after extensive search: archive.org general/ipaarchive search, web search for the exact filename, and a full scan of ios-ipa-collection (14792 files), ios_3_2_ipa/ios_3_ipa/ios_2_ipa, iPadGames/iPadGames2010, and iOSObscura (17668 files, organized by bundle ID -- its com.turner.Surgeon2 folder has only v2.3). No known automated source; this file cannot be reconstructed if lost."
   },
   {
     "path": "IPAs/com.turner.AmateurSurgeonXMas-iOS3.0-(Clutch-2.0.4).ipa",
