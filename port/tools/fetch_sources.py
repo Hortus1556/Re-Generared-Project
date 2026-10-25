@@ -28,6 +28,7 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 
 # Where the engine/game C++ source, CMakeLists.txt and this tools/ folder
@@ -160,7 +161,16 @@ def ensure(games, log=print):
                 status = "MISMATCH"
         elif entry.get("fetch"):
             fetch = entry["fetch"]
-            url = f"https://archive.org/download/{fetch['item']}/{fetch['file']}"
+            if fetch["source"] == "flashpoint":
+                # entry["path"] is "re/flash/<game>/<host>/<rest>" -- the
+                # part after "re/flash/<game>/" is exactly the host+path
+                # Flashpoint's own Legacy htdocs mirror serves (verified
+                # by hash): https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/<host>/<rest>
+                _, _, after = entry["path"].partition(f"re/flash/{entry['game']}/")
+                url = "https://infinity.flashpointarchive.org/Flashpoint/Legacy/htdocs/" + \
+                    urllib.parse.quote(after)
+            else:
+                url = f"https://archive.org/download/{fetch['item']}/{fetch['file']}"
             part = dest + ".part"
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             try:
