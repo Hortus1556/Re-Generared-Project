@@ -28,6 +28,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 
@@ -37,7 +38,7 @@ import urllib.request
 # code, build system, tool scripts), never the copyrighted assets
 # (re/, IPAs/, port/games/, music restored/ are still fetched/supplied
 # separately, same as always).
-SOURCE_REPO = "https://github.com/Hortus1556/Re-Generared-Project.git"
+SOURCE_REPO = "https://github.com/Hortus1556/Re-Generated-Project.git"
 
 
 def _is_project_root(path):
@@ -66,23 +67,33 @@ else:
 MANIFEST = os.path.join(ROOT, "port", "tools", "sources_manifest.json")
 
 
+_GIT_TIMEOUT = 600  # seconds -- a stalled connection must not hang the whole build forever
+
+
 def ensure_project_root(log=print):
     """Makes sure ROOT holds a real checkout before anything else touches
     it: uses one already in place with no network access, clones one next
     to this tool if there's nothing there yet, and keeps an existing clone
     from going stale with `git pull` (best-effort -- offline or a pull
-    conflict doesn't block building with whatever's already there)."""
+    conflict doesn't block building with whatever's already there). Every
+    git call is bounded by _GIT_TIMEOUT: a genuinely stalled connection
+    (not just a slow one -- see download()'s own per-file progress log)
+    reports clearly instead of hanging the whole build indefinitely."""
     if _is_project_root(ROOT):
         if os.path.isdir(os.path.join(ROOT, ".git")):
             if not shutil.which("git"):
                 return
-            proc = subprocess.run(["git", "-C", ROOT, "pull", "--ff-only"],
-                                   capture_output=True, text=True)
-            if proc.returncode == 0:
-                log(f"updated {ROOT} ({proc.stdout.strip() or 'already up to date'})")
-            else:
-                log(f"warning: couldn't update {ROOT} (offline? local changes?) -- "
-                    f"building with what's there.\n{proc.stderr.strip()}")
+            try:
+                proc = subprocess.run(["git", "-C", ROOT, "pull", "--ff-only"],
+                                       capture_output=True, text=True, timeout=_GIT_TIMEOUT)
+                if proc.returncode == 0:
+                    log(f"updated {ROOT} ({proc.stdout.strip() or 'already up to date'})")
+                else:
+                    log(f"warning: couldn't update {ROOT} (offline? local changes?) -- "
+                        f"building with what's there.\n{proc.stderr.strip()}")
+            except subprocess.TimeoutExpired:
+                log(f"warning: 'git pull' in {ROOT} didn't finish in {_GIT_TIMEOUT}s "
+                    "(stalled connection?) -- building with what's there.")
         return
 
     if os.path.isdir(ROOT) and os.listdir(ROOT):
@@ -96,7 +107,11 @@ def ensure_project_root(log=print):
             f"clone one. Install git, or run this from inside the project's own port/tools/."
         )
     log(f"cloning {SOURCE_REPO} -> {ROOT}")
-    proc = subprocess.run(["git", "clone", SOURCE_REPO, ROOT], capture_output=True, text=True)
+    try:
+        proc = subprocess.run(["git", "clone", SOURCE_REPO, ROOT], capture_output=True, text=True,
+                               timeout=_GIT_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"cloning {SOURCE_REPO} didn't finish in {_GIT_TIMEOUT}s (stalled connection?)")
     if proc.returncode != 0 or not _is_project_root(ROOT):
         raise RuntimeError(f"cloning {SOURCE_REPO} failed:\n{proc.stderr.strip()}")
 
@@ -132,14 +147,28 @@ def sha256_of(path):
     return h.hexdigest()
 
 
-def download(url, dest_part):
+def download(url, dest_part, log=print):
+    """Streams url to dest_part, logging progress every ~10 MB (or every
+    ~5s for a slow connection) so a large file (AS3's IPAs are 240-300 MB)
+    never looks indistinguishable from a genuine hang -- the one thing
+    that actually confused a real run of this tool."""
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=60) as resp, open(dest_part, "wb") as out:
+        total = resp.headers.get("Content-Length")
+        total_mb = f"{int(total) / 1e6:.0f} MB" if total else "unknown size"
+        got = 0
+        last_logged = 0
+        last_log_time = time.monotonic()
         while True:
             chunk = resp.read(1024 * 1024)
             if not chunk:
                 break
             out.write(chunk)
+            got += len(chunk)
+            now = time.monotonic()
+            if got - last_logged >= 10 * 1024 * 1024 or now - last_log_time >= 5:
+                log(f"  ... {got / 1e6:.0f} / {total_mb}")
+                last_logged, last_log_time = got, now
 
 
 def ensure(games, log=print):
@@ -162,7 +191,7 @@ def ensure(games, log=print):
             else:
                 status = "MISMATCH"
         elif entry.get("fetch"):
-            status = _fetch_one(entry["fetch"], entry["path"], dest, expected)
+            status = _fetch_one(entry["fetch"], entry["path"], dest, expected, log)
         elif entry.get("fallback"):
             # Not the exact file (different hash, verified against its
             # OWN expected hash below -- never skip verification just
@@ -170,7 +199,7 @@ def ensure(games, log=print):
             # real one can't be found at all: see the fallback's own
             # "label" for exactly how it differs.
             fb = entry["fallback"]
-            status = _fetch_one(fb, entry["path"], dest, fb["sha256"])
+            status = _fetch_one(fb, entry["path"], dest, fb["sha256"], log)
             if status == "fetched":
                 status = f"fetched (fallback: {fb['label']})"
         else:
@@ -180,7 +209,7 @@ def ensure(games, log=print):
     return results
 
 
-def _fetch_one(fetch, entry_path, dest, expected_sha256):
+def _fetch_one(fetch, entry_path, dest, expected_sha256, log=print):
     """Downloads one file per a manifest entry's "fetch" (or "fallback")
     spec into dest, verified against expected_sha256. Returns "fetched",
     or a status string describing why not."""
@@ -197,7 +226,8 @@ def _fetch_one(fetch, entry_path, dest, expected_sha256):
     part = dest + ".part"
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     try:
-        download(url, part)
+        log(f"  fetching {entry_path} <- {url}")
+        download(url, part, log=log)
         actual = sha256_of(part)
         if actual == expected_sha256:
             os.replace(part, dest)
