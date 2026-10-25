@@ -1,0 +1,17 @@
+build/
+build-*/
+dist/
+re/
+IPAs/
+music restored/
+port/games/
+port/assets/
+__pycache__/
+*.pyc
+*.exe
+*.obj
+*.o
+*.a
+*.pdb
+.vs/
+.vscode/

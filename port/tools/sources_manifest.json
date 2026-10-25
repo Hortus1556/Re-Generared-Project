@@ -1,0 +1,115 @@
+[
+  {
+    "path": "re/flash/as1/i.adultswim.com/adultswim/games2/game-files/amateursurgeon/game.swf",
+    "sha256": "4aea3fad955b3e140c05ff8559107bd12c8545b789f856572ae5f6788561eedf",
+    "game": "as1",
+    "fetch": {
+      "source": "archive_org",
+      "item": "AmateurSurgeonFlash",
+      "file": "i.adultswim.com/adultswim/games2/game-files/amateursurgeon/game.swf"
+    }
+  },
+  {
+    "path": "re/flash/as1/i.adultswim.com/adultswim/games2/game-files/amateursurgeon/dialogue.xml",
+    "sha256": "c5dedff29fa73e2f0c0bf90da539f99b32aa1f529e30e54ed9ccb64f2e110ccd",
+    "game": "as1",
+    "fetch": {
+      "source": "archive_org",
+      "item": "AmateurSurgeonFlash",
+      "file": "i.adultswim.com/adultswim/games2/game-files/amateursurgeon/dialogue.xml"
+    }
+  },
+  {
+    "path": "re/flash/xmas/games.adultswim.com/AmateurSurgeonChristmas/Amateur Surgeon Christmas.swf",
+    "sha256": "cb9b01e04b2cb54b46b32c588ff1df9c34dcceef8a5325f6dad7ee72be4dc731",
+    "game": "xmas",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/core/skin/shell.swf",
+    "sha256": "9932916393d42fa6f6b46cb894b38aefe4e1e00a700d536042b792d93f7a054b",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/core/skin/shell_preloader.swf",
+    "sha256": "6ee7d9e1cf901bf9e8868810acd230560e57124b8a2fb12bda7aecb48379a4c9",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/core/skin/sounds.swf",
+    "sha256": "752248306409c2026fe246f102d823b88ebf094fd1abe71c7c62e34debbd7ad2",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/game.swf",
+    "sha256": "15f85d656b062eb3dfeee6d20cc73e26cf07f711f2203f5089a56f0285e6c2f4",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/media/assets.swf",
+    "sha256": "aa7b296b44b89dd7d8b209cfbff930f77e3f7309184d0c01847a5899791763f8",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "re/flash/as2/i.adultswim.com/adultswim/games2/game-files/amateursurgeon2/media/cut_scene.swf",
+    "sha256": "966cab168a080ffd5a8af06854bec9a6782cf78e8cbba8e6f968b079e89e2d99",
+    "game": "as2",
+    "fetch": null,
+    "note": "Flashpoint-preserved; no individually-downloadable archive.org source found. Best effort only (try a local Flashpoint install's htdocs cache, or extract manually)."
+  },
+  {
+    "path": "IPAs/A.Surgeon_v1.0.3_os32.ipa",
+    "sha256": "80f9cc2fd3eaeb848140d9c00dc28ea6d95570b0342555e3e6aaef3699a06245",
+    "game": "as1",
+    "fetch": null,
+    "note": "No matching version found on archive.org (different build/version there). No known automated source; this file cannot be reconstructed if lost."
+  },
+  {
+    "path": "IPAs/Amateur Surgeon 2 HD v1.2 iPad os32most_uniQue.ipa",
+    "sha256": "b12151ac45429cf3b3f6f1246a05c92fa2e8018844688928ee552e3fc232161b",
+    "game": "as2",
+    "fetch": null,
+    "note": "No matching version found on archive.org (different build/version there). No known automated source; this file cannot be reconstructed if lost."
+  },
+  {
+    "path": "IPAs/com.turner.AmateurSurgeonXMas-iOS3.0-(Clutch-2.0.4).ipa",
+    "sha256": "c22df87d676768a711cf10b14d7359e6d3a82d13a71fb36e633944b3c965b878",
+    "game": "xmas",
+    "fetch": {
+      "source": "archive_org",
+      "item": "com.turner.amateursurgeonxmas-ios3.0-clutch-2.0.4",
+      "file": "com.turner.AmateurSurgeonXMas-iOS3.0-(Clutch-2.0.4).ipa"
+    }
+  },
+  {
+    "path": "IPAs/Amateur Surgeon 3.ipa",
+    "sha256": "69b6e7b517d2d45be5947239c1cb37d7d40e21210d62d6890c6346f0a6d21e36",
+    "game": "as3",
+    "fetch": {
+      "source": "archive_org",
+      "item": "Amateur_Surgeon_3_1.02_ios_6.0",
+      "file": "Amateur_Surgeon_3_1.02_ios_6.0.ipa"
+    }
+  },
+  {
+    "path": "IPAs/Amateur Surgeon 3 v1.45 (iOS).ipa",
+    "sha256": "d07445652ecfbe7e33fcc4ba54c9f6f71cb66216f5e30add1371433575c6fe1a",
+    "game": "as3",
+    "fetch": {
+      "source": "archive_org",
+      "item": "Surgeon_3_1.45_ios_6.0",
+      "file": "Surgeon_3_1.45_ios_6.0.ipa"
+    }
+  }
+]

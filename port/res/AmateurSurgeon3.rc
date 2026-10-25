@@ -1,0 +1,31 @@
+// The exe's icon (from the IPA's iTunesArtwork) and version details: the
+// FileDescription is the name Windows shows for the running game (Task
+// Manager, the taskbar).
+#include <winver.h>
+
+1 ICON "AmateurSurgeon3.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1, 0, 2, 0
+PRODUCTVERSION 1, 0, 2, 0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "FileDescription", "Amateur Surgeon 3"
+      VALUE "ProductName", "Amateur Surgeon 3"
+      VALUE "InternalName", "AmateurSurgeon3"
+      VALUE "OriginalFilename", "AmateurSurgeon3.exe"
+      VALUE "FileVersion", "1.02"
+      VALUE "ProductVersion", "1.02"
+      VALUE "Comments", "Windows port of the iOS game (1.02)"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END
